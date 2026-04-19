@@ -32,6 +32,9 @@ export class Booking {
   @Column('uuid')
   customerId: string;
 
+  @Column()
+  title: string;
+
   @Column({ type: 'text', nullable: true })
   notes: string;
 
