@@ -1,5 +1,5 @@
-import { Customer } from 'src/customers/entities/customer.entity.js';
-import { Tenant } from 'src/tenants/entities/tenant.entity.js';
+import { Customer } from '../../customers/entities/customer.entity.js';
+import { Tenant } from '../../tenants/entities/tenant.entity.js';
 import {
   Column,
   CreateDateColumn,
@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 
 // Enum stored as string in DB — readable in raw SQL queries
 export enum BookingStatus {
@@ -67,9 +68,9 @@ export class Booking {
 
   @ManyToOne(() => Tenant, (tenant) => tenant.bookings)
   @JoinColumn({ name: 'tenantId' })
-  tenant: Tenant;
+  tenant: Relation<Tenant>;
 
   @ManyToOne(() => Customer, (customer) => customer.bookings)
   @JoinColumn({ name: 'customerId' })
-  customer: Customer;
+  customer: Relation<Customer>;
 }

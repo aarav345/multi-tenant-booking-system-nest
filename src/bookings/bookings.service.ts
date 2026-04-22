@@ -6,8 +6,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Booking, BookingStatus } from './entities/booking.entity.js';
 import { Repository } from 'typeorm';
-import { Customer } from 'src/customers/entities/customer.entity.js';
-import { Tenant } from 'src/tenants/entities/tenant.entity.js';
+import { Customer } from '../customers/entities/customer.entity.js';
+import { Tenant } from '../tenants/entities/tenant.entity.js';
 import { CreateBookingDto } from './dto/create-booking.dto.js';
 
 @Injectable()

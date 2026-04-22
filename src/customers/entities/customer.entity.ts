@@ -1,5 +1,5 @@
-import { Booking } from 'src/bookings/entities/booking.entity.js';
-import { Tenant } from 'src/tenants/entities/tenant.entity.js';
+import { Booking } from '../../bookings/entities/booking.entity.js';
+import { Tenant } from '../../tenants/entities/tenant.entity.js';
 import {
   Column,
   CreateDateColumn,
@@ -11,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 
 @Entity('customers')
 // Compound index - we query by tenantId constantly
@@ -24,6 +25,12 @@ export class Customer {
   // Quering by tenantId is out most common filter
   @Column('uuid')
   tenantId: string;
+
+  @Column()
+  email: string;
+
+  @Column()
+  name: string;
 
   @Column({ nullable: true })
   phone: string;
@@ -39,8 +46,8 @@ export class Customer {
 
   @ManyToOne(() => Tenant, (tenant) => tenant.customers)
   @JoinColumn({ name: 'tenantId' })
-  tenant: Tenant;
+  tenant: Relation<Tenant>;
 
   @OneToMany(() => Booking, (booking) => booking.customer)
-  bookings: Booking[];
+  bookings: Relation<Booking[]>;
 }

@@ -9,10 +9,10 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard.js';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard.js';
 import { BookingService } from './bookings.service.js';
-import { CurrentTenant } from 'src/common/decorators/current-tenant.decorator.js';
-import { Tenant } from 'src/tenants/entities/tenant.entity.js';
+import { CurrentTenant } from '../common/decorators/current-tenant.decorator.js';
+import { Tenant } from '../tenants/entities/tenant.entity.js';
 import { CreateBookingDto } from './dto/create-booking.dto.js';
 import { BookingStatus } from './entities/booking.entity.js';
 

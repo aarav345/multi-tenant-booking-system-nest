@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { Tenant } from 'src/tenants/entities/tenant.entity.js';
+import { Tenant } from '../../tenants/entities/tenant.entity.js';
 import { AuthenticatedRequest } from '../interfaces/authenticated-request.interface.js';
 
 // Usage: @CurrentTenant() tenant: Tenant

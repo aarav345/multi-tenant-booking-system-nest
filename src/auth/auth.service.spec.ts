@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service.js';
-import { Tenant } from 'src/tenants/entities/tenant.entity.js';
+import { Tenant } from '../tenants/entities/tenant.entity.js';
 
 const mockRepository = () => ({
   findOne: vi.fn(),

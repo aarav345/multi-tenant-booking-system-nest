@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Tenant } from 'src/tenants/entities/tenant.entity.js';
+import { Tenant } from '../tenants/entities/tenant.entity.js';
 import { Repository } from 'typeorm';
 import { RegisterDto } from './dto/register.dto.js';
 import * as bcrypt from 'bcrypt';
