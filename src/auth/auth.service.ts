@@ -11,6 +11,7 @@ import { RegisterDto } from './dto/register.dto.js';
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './interfaces/jwt-payload.interface.js';
 import { LoginDto } from './dto/login.dto.js';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class AuthService {
@@ -18,25 +19,24 @@ export class AuthService {
     @InjectRepository(Tenant)
     private tenantRepo: Repository<Tenant>,
     private jwtService: JwtService,
+    @InjectPinoLogger(AuthService.name)
+    private readonly logger: PinoLogger,
   ) {}
 
   async register(dto: RegisterDto): Promise<{ accessToken: string }> {
     const existing = await this.tenantRepo.findOne({
-      where: [{ email: dto.email }, { slug: dto.slug }], // OR
+      where: [{ email: dto.email }, { slug: dto.slug }],
     });
 
     if (existing) {
       throw new ConflictException(
         existing.email === dto.email
-          ? 'Email already resgisterd.'
+          ? 'Email already registered.'
           : 'Slug already taken.',
       );
     }
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
-    // Cost factor of 12 : good balance of security vs speed at this scale
-    // At 100k users with login spikes, revisit this number
-
     const tenant = this.tenantRepo.create({
       email: dto.email,
       passwordHash,
@@ -45,7 +45,7 @@ export class AuthService {
     });
 
     await this.tenantRepo.save(tenant);
-
+    this.logger.info({ tenantId: tenant.id }, 'New tenant registered');
     return { accessToken: this.generateToken(tenant) };
   }
 
@@ -54,8 +54,6 @@ export class AuthService {
       where: { email: dto.email },
     });
 
-    // Always run bcrypt.compare even when tenant not found
-    // This prevents timing attacks that reveal whether email exists
     const dummyHash =
       '$2b$12$invalidhashpaddingtomakethislookupconstanttime000000000';
     const isValid = await bcrypt.compare(
@@ -64,10 +62,11 @@ export class AuthService {
     );
 
     if (!tenant || !isValid || !tenant.isActive) {
-      // Deliberately vague error don't leak whether email exists
+      this.logger.warn({ email: dto.email }, 'Failed login attempt');
       throw new UnauthorizedException('Invalid credentials.');
     }
 
+    this.logger.info({ tenantId: tenant.id }, 'Tenant logged in');
     return { accessToken: this.generateToken(tenant) };
   }
 

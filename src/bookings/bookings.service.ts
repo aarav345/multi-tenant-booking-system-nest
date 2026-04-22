@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { Customer } from '../customers/entities/customer.entity.js';
 import { Tenant } from '../tenants/entities/tenant.entity.js';
 import { CreateBookingDto } from './dto/create-booking.dto.js';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 
 @Injectable()
 export class BookingService {
@@ -17,6 +18,8 @@ export class BookingService {
     private bookingRepo: Repository<Booking>,
     @InjectRepository(Customer)
     private customerRepo: Repository<Customer>,
+    @InjectPinoLogger(BookingService.name)
+    private readonly logger: PinoLogger,
   ) {}
 
   async create(tenant: Tenant, dto: CreateBookingDto): Promise<Booking> {
@@ -96,11 +99,20 @@ export class BookingService {
       throw new ForbiddenException('Cannot update a cancelled booking.');
     }
 
+    const previousStatus = booking.status;
+
     booking.status = status;
     if (status === BookingStatus.COMPLETED) {
       booking.completedAt = new Date();
     }
 
-    return this.bookingRepo.save(booking);
+    const updated = await this.bookingRepo.save(booking);
+
+    this.logger.info(
+      { tenantId: tenant.id, bookingId, from: previousStatus, to: status },
+      'Booking status updated',
+    );
+
+    return updated;
   }
 }
