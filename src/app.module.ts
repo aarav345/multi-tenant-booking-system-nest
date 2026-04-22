@@ -3,6 +3,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import databaseConfig from './config/database.config.js';
 import jwtConfig from './config/jwt.config.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module.js';
+import { CustomersModule } from './customers/customers.module.js';
+import { BookingsModule } from './bookings/bookings.module.js';
 
 @Module({
   imports: [
@@ -31,6 +34,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         logging: process.env.NODE_ENV === 'development',
       }),
     }),
+    AuthModule,
+    CustomersModule,
+    BookingsModule,
   ],
 })
 export class AppModule {}
