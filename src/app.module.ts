@@ -30,7 +30,9 @@ import { BookingsModule } from './bookings/bookings.module.js';
         autoLoadEntities: true,
         // synchronize: true is only for development
         // In production, we will use migrations
-        synchronize: process.env.NODE_ENV !== 'production',
+        synchronize: false,
+        migrations: ['dist/migrations/*.js'],
+        migrationsRun: true, // auto-runs pending migration in app start
         logging: process.env.NODE_ENV === 'development',
       }),
     }),
