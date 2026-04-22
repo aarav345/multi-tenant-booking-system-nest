@@ -6,9 +6,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module.js';
 import { CustomersModule } from './customers/customers.module.js';
 import { BookingsModule } from './bookings/bookings.module.js';
+import { LoggerModule } from 'nestjs-pino';
+import { pinoConfig } from './config/logger.config.js';
 
 @Module({
   imports: [
+    LoggerModule.forRoot(pinoConfig),
     // Config must load first - everything depends on it
     ConfigModule.forRoot({
       isGlobal: true, // no need to import in every module
